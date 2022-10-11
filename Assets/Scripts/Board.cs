@@ -116,6 +116,7 @@ public class Board : MonoBehaviour
             {
                 LineClear(row);
                 LogicValue.Score += LogicValue.GetScore;
+                Timer.TimeComsume(LogicValue.TimeConsume);
                 Debug.Log(LogicValue.BlockSpeed);
                // Debug.Log(StageMgr.StageArr[0].SpeedUp);
             }

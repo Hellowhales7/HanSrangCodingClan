@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,8 +10,10 @@ public class Timer : MonoBehaviour
     static bool b_Timer = false;
     public Text Minute, Seconds;
     [SerializeField]
-    private float m_time = 10 ;
-    public static float time { get { return Inst.m_time; }  }
+    private float m_time = 179.9f;
+    public static float time { get { return Inst.m_time; } set { Inst.m_time = value; } }
+    
+
     private void Start()
     {
         Inst = this;
@@ -24,6 +27,10 @@ public class Timer : MonoBehaviour
     {
         b_Timer = false;
         Inst.m_time = 180;
+    }
+    public static void TimeComsume(float consume)
+    {
+        time -= consume;
     }
     public void SetTimer(int time)
     {
@@ -44,5 +51,10 @@ public class Timer : MonoBehaviour
             Seconds.text = ((int)time % 60).ToString();
         }
     }
-
+    public static bool ActivatorCounter()
+    {
+        if (time % LogicValue.ActivatorGap < 0.5f)
+            return true;
+        return false;
+    }
 }
