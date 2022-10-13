@@ -39,6 +39,13 @@ public class StageMgr : MonoBehaviour
 
     private float ActivatorOnTime = 0;
     private bool ActivatorOnOff = true;
+    private void Init()
+    {
+         ActivatorCount = 1;
+         ActivatorOnTime = 0;
+         ActivatorOnOff = true;
+         LeverList.Clear();
+    }
     void Awake()
     {
         Inst = this;

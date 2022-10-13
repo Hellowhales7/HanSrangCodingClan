@@ -10,13 +10,15 @@ public class Timer : MonoBehaviour
     static bool b_Timer = false;
     public Text Minute, Seconds;
     [SerializeField]
-    private float m_time = 179.9f;
+    private float m_time = 180.0f;
     public static float time { get { return Inst.m_time; } set { Inst.m_time = value; } }
-    
+    private float realtime;
 
     private void Start()
     {
         Inst = this;
+        realtime = m_time - 0.1f;
+        m_time = realtime;
     }
 
     public static void TimerON()
@@ -26,7 +28,7 @@ public class Timer : MonoBehaviour
     public static void TimerOFF()
     {
         b_Timer = false;
-        Inst.m_time = 180;
+        Inst.m_time = Inst.realtime;
     }
     public static void TimeComsume(float consume)
     {

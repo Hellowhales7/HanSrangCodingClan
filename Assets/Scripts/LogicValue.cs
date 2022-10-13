@@ -25,15 +25,14 @@ public class LogicValue : MonoBehaviour
     private float m_GetScore = 0.025f;
     public static float GetScore { get { return Inst.m_GetScore; } }
     [SerializeField]
-    private float m_ActivatorGap = 30;
+    private float m_ActivatorGap = 30.0f;
     public static float ActivatorGap { get { return Inst.m_ActivatorGap; } }
     [SerializeField]
-    private float m_DeActivatorGap = 15;
+    private float m_DeActivatorGap = 15.0f;
     public static float DeActivatorGap { get { return Inst.m_DeActivatorGap; } }
     [SerializeField]
-    private float m_TimeConsume = 1;
+    private float m_TimeConsume = 1.0f;
     public static float TimeConsume { get { return Inst.m_TimeConsume; } }
-
 
 
     private void Awake()
