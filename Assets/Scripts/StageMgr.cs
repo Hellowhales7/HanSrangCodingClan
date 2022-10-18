@@ -4,28 +4,6 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Stage
-{
-    public Stage(bool ZeroStage, bool Speed)
-    {
-        SpeedUp = Speed;
-        ZeroClear = ZeroStage;
-        if (ZeroClear)
-            LeverList.Add(0);
-        if (SpeedUp)
-            LeverList.Add(1);
-    }
-    public bool SpeedUp;
-    public bool ZeroClear;
-    private List<int> LeverList = new List<int>();
-
-    public int SelectLever() // 들어간 레버별 숫자에서 랜덤으로 하나를 고른다.
-    {
-        int rand = Random.Range(0, LeverList.Count);
-        return LeverList[rand];
-    }
-}
-
 public class StageMgr : MonoBehaviour
 {
     private static StageMgr Inst;
@@ -49,8 +27,10 @@ public class StageMgr : MonoBehaviour
     void Awake()
     {
         Inst = this;
-        Inst.StageList.Add(new Stage(true, false));
-        Inst.StageList.Add(new Stage(false, true));
+        Stage = PlayerPrefs.GetInt("Stage");
+        Inst.StageList.Add(new Stage(true, false, false));
+        Inst.StageList.Add(new Stage(false, true, false));
+        Inst.StageList.Add(new Stage(false, false, true));
         DeActivator();
     }
     private void Update()
@@ -73,6 +53,7 @@ public class StageMgr : MonoBehaviour
         LogicValue.ScoreReset();
         Timer.TimerOFF();
         SceneManager.LoadScene("GameOver");
+        PlayerPrefs.SetInt("Stage", Stage);
     }
     public void ZeroClear()
     {

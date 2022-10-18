@@ -61,4 +61,8 @@ public class LogicValue : MonoBehaviour
     {
         Inst.m_BlockData.BlockSpeed += 0.3f;
     }
+    public static void SpawnCover()
+    {
+        
+    }
 }

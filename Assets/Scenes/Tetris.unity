@@ -1121,7 +1121,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Minute: {fileID: 481540324}
   Seconds: {fileID: 945598342}
-  m_time: 179.9
+  m_time: 10
 --- !u!1 &1862550087
 GameObject:
   m_ObjectHideFlags: 0
