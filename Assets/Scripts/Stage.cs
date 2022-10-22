@@ -6,14 +6,17 @@ using UnityEngine.SceneManagement;
 
 public class Stage : MonoBehaviour
 {
-    public Stage(bool ZeroStage, bool Speed, bool Cover)
+    public Stage(bool ZeroStage, bool Speed, bool bCover)
     {
         SpeedUp = Speed;
         ZeroClear = ZeroStage;
+        Cover = bCover;
         if (ZeroClear)
             LeverList.Add(0);
         if (SpeedUp)
             LeverList.Add(1);
+        if (Cover)
+            LeverList.Add(2);
     }
     private bool SpeedUp;
     private bool ZeroClear;

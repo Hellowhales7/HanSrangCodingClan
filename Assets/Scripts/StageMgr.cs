@@ -27,7 +27,7 @@ public class StageMgr : MonoBehaviour
     void Awake()
     {
         Inst = this;
-        Stage = PlayerPrefs.GetInt("Stage");
+       // Stage = PlayerPrefs.GetInt("Stage"); //스테이지를 불러온다
         Inst.StageList.Add(new Stage(true, false, false));
         Inst.StageList.Add(new Stage(false, true, false));
         Inst.StageList.Add(new Stage(false, false, true));
@@ -53,7 +53,7 @@ public class StageMgr : MonoBehaviour
         LogicValue.ScoreReset();
         Timer.TimerOFF();
         SceneManager.LoadScene("GameOver");
-        PlayerPrefs.SetInt("Stage", Stage);
+        PlayerPrefs.SetInt("Stage", Stage); //스테이지를 저장한다
     }
     public void ZeroClear()
     {
@@ -80,7 +80,13 @@ public class StageMgr : MonoBehaviour
                 LeverList.Add(1);
                 Debug.Log("SpeedUpOn");
                 break;
+            case 2:
+                LogicValue.SpawnCover();
+                LeverList.Add(2);
+                Debug.Log("SpawnCover");
+                break;
             default:
+               // Debug.Log(lever);
                 Debug.LogWarning("No Lever");
                 break;
         }
