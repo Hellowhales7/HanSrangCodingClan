@@ -72,16 +72,19 @@ public class LogicValue : MonoBehaviour
     }
     public static void SpawnCover()
     {
-        GameObject NewCover = new GameObject("Cover");
-        SpriteRenderer NewSprite = NewCover.AddComponent<SpriteRenderer>();
-        NewSprite.sprite = Cover;
-        NewSprite.sortingOrder = 10;
-        Vector3 Create = new Vector3();
-        Create.x = UnityEngine.Random.Range(-5,5);
-        Create.y = UnityEngine.Random.Range(-10,10);
-        Create.z = 0;
-        NewCover.transform.position = Create;
-        NewCover.transform.localScale = new Vector3(UnityEngine.Random.Range(2, 8), UnityEngine.Random.Range(2, 8), 1);
-        
+        for (int i = 0; i < 3; i++)
+        {
+            GameObject NewCover = new GameObject("Cover");
+            SpriteRenderer NewSprite = NewCover.AddComponent<SpriteRenderer>();
+            NewSprite.sprite = Cover;
+            NewSprite.sortingOrder = 10;
+            Vector3 Create = new Vector3();
+            Create.x = UnityEngine.Random.Range(-5, 5);
+            Create.y = UnityEngine.Random.Range(-10, 10);
+            Create.z = 0;
+            NewCover.transform.position = Create;
+            NewCover.transform.localScale = new Vector3(UnityEngine.Random.Range(2, 8), UnityEngine.Random.Range(2, 8), 1);
+            NewCover.AddComponent<Cover>();
+        }
     }
 }
