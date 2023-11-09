@@ -22,7 +22,7 @@ public class LogicValue : MonoBehaviour
     private static float m_Score;
     public static float Score { get { return m_Score; } set { m_Score = value; } }
     [SerializeField]
-    private float m_GetScore = 0.025f;
+    private float m_GetScore = 0.0025f;
     public static float GetScore { get { return Inst.m_GetScore; } }
     [SerializeField]
     private float m_ActivatorGap = 30.0f;
@@ -56,7 +56,7 @@ public class LogicValue : MonoBehaviour
 
     public static float BlockSpeed
     {
-        get { return Inst.m_BlockData.BlockSpeed - (m_Score*1.1f); }
+        get { return Inst.m_BlockData.BlockSpeed - (m_Score*0.01f); }
     }
     public static float BlockLockDelay
     {

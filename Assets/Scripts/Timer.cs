@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,7 +9,7 @@ public class Timer : MonoBehaviour
 {
     private static Timer Inst;
     static bool b_Timer = false;
-    public Text Minute, Seconds;
+    public TextMeshProUGUI Minute, Seconds, Score;
     [SerializeField]
     private float m_time = 180.0f;
     public static float time { get { return Inst.m_time; } set { Inst.m_time = value; } }
@@ -52,6 +53,7 @@ public class Timer : MonoBehaviour
             Minute.text = ((int)time / 60).ToString();
             Seconds.text = ((int)time % 60).ToString();
         }
+        Score.text = ((int)LogicValue.Score*100).ToString();
     }
     public static bool ActivatorCounter()
     {
