@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UIElements.Experimental;
 
-public class NewBehaviourScript : MonoBehaviour
+public class Ghost : MonoBehaviour
 {
     public Tile tile;
     public Board board;
