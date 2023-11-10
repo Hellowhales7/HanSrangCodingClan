@@ -14,6 +14,7 @@ public class LetterLogic : MonoBehaviour
     // 한글 자음과 모음을 키로 하는 Dictionary 생성
     public static Dictionary<string, int> koreanDictionary = new Dictionary<string, int>();
     public static int score = 0;
+    string jsonString;
     private void Awake()
     {
         Inst = this;
@@ -34,26 +35,41 @@ public class LetterLogic : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        string jsonString = "{\"Type\":\"Letter\",\"Data\":[\"ㅅ\",\"ㅎ\",\"ㅋ\",\"ㅍ\",\"ㅌ\",\"ㅎ\",\"ㄲ\",\"ㅏ\",\"ㅗ\",\"ㅣ\"]}"; // JSON 문자열을 가져옵니다
+        //string jsonString = "{\"Type\":\"Letter\",\"Data\":[\"ㅅ\",\"ㅎ\",\"ㅋ\",\"ㅍ\",\"ㅌ\",\"ㅎ\",\"ㄲ\",\"ㅏ\",\"ㅗ\",\"ㅣ\"]}"; // JSON 문자열을 가져옵니다
 
-        // JSON 문자열을 LetterData 객체로 역직렬화
-        LetterData Data = JsonUtility.FromJson<LetterData>(jsonString);
+        //// JSON 문자열을 LetterData 객체로 역직렬화
+        //LetterData Data = JsonUtility.FromJson<LetterData>(jsonString);
 
-        for (int i = 0; i < Data.Data.Length; i++)
-        {
-            if (count < 25)
-            {
-                koreanDictionary[Data.Data[i]]++;
-                count++;
-            }
-        }
+        //for (int i = 0; i < Data.Data.Length; i++)
+        //{
+        //    if (count < 25)
+        //    {
+        //        koreanDictionary[Data.Data[i]]++;
+        //        count++;
+        //    }
+        //}
 
-        Debug.Log(koreanDictionary["ㅅ"]);
+        //Debug.Log(koreanDictionary["ㅅ"]);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(WebSocketDemo.Instance.wsQueue.Count >0)
+        {
+            jsonString =WebSocketDemo.Instance.wsQueue.Dequeue();
+
+            LetterData Data = JsonUtility.FromJson<LetterData>(jsonString);
+
+            for (int i = 0; i < Data.Data.Length; i++)
+            {
+                if (count < 25)
+                {
+                    koreanDictionary[Data.Data[i]]++;
+                    count++;
+                }
+            }
+        }
         string[] All = { "ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ", "ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅘ", "ㅙ", "ㅚ", "ㅛ", "ㅜ", "ㅝ", "ㅞ", "ㅟ", "ㅠ", "ㅡ", "ㅢ", "ㅣ" };
         int temp = 0;
 

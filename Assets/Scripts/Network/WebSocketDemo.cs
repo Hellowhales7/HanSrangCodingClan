@@ -24,7 +24,7 @@ public class WebSocketDemo : MonoBehaviour
     public static WebSocketDemo Instance { get; private set; }
 
     public WebSocket ws { get; private set; }
-    Queue<string> wsQueue = new Queue<string>();
+    public Queue<string> wsQueue = new Queue<string>();
 
     private void Awake()
     {
@@ -77,9 +77,9 @@ public class WebSocketDemo : MonoBehaviour
         if (wsQueue.Count <= 0)
             return;
         
-        var str = wsQueue.Dequeue();
+        //var str = wsQueue.Dequeue();
             
-        Debug.Log($"[KHU] * str: {str}");
+        //Debug.Log($"[KHU] * str: {str}");
             
         // txt.text = str;
         // txtbtn.text = str;
