@@ -21,14 +21,26 @@ public class UserData
 // 출처 : https://usingsystem.tistory.com/202
 public class WebSocketDemo : MonoBehaviour
 {
+    public static WebSocketDemo Instance { get; private set; }
+
+    public WebSocket ws { get; private set; }
     Queue<string> wsQueue = new Queue<string>();
-    
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+
+        DontDestroyOnLoad(gameObject);
+    }
     // Use this for initialization
     private void Start()
     {
         // Create WebSocket instance
         // var ws = WebSocketFactory.CreateInstance("ws://echo.websocket.org");
-        var ws = WebSocketFactory.CreateInstance("ws://13.209.164.126:8000/api/game/ws/hnj");
+        ws = WebSocketFactory.CreateInstance("ws://13.209.164.126:8000/api/game/ws/hnj");
 
         // Add OnOpen event listener
         ws.OnOpen += () =>
@@ -37,7 +49,7 @@ public class WebSocketDemo : MonoBehaviour
             Debug.Log($"WS state: {ws.GetState()}");
 
             // ws.Send(Encoding.UTF8.GetBytes("Hello from Unity 3D!"));
-            ws.Send(Encoding.UTF8.GetBytes(new UserData().SaveToString()));
+            SendGameLogic(new UserData().SaveToString());
         };
 
         // Add OnMessage event listener
@@ -71,5 +83,15 @@ public class WebSocketDemo : MonoBehaviour
             
         // txt.text = str;
         // txtbtn.text = str;
+    }
+
+    private void OnDestroy()
+    {
+        ws.Close();
+    }
+
+    public void SendGameLogic(string jsonData)
+    {
+        ws.Send(Encoding.UTF8.GetBytes(jsonData));
     }
 }

@@ -302,6 +302,8 @@ public class Board : MonoBehaviour
         }
         LetterData SendData = new LetterData();
         string json = JsonUtility.ToJson(SendData);
+
+        WebSocketDemo.Instance.SendGameLogic(json);
         Debug.Log(json);
 
     }
