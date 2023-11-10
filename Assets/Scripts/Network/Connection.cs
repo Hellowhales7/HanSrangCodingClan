@@ -1,10 +1,18 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 using Cysharp.Threading.Tasks;
 using NativeWebSocket;
+
+[Serializable]
+public class UserData
+{
+    public string userType = "wordguess";
+    
+    public string SaveToString()
+    {
+        return JsonUtility.ToJson(this);
+    }
+}
 
 public class Connection : MonoBehaviour
 {
@@ -37,7 +45,7 @@ public class Connection : MonoBehaviour
     {
         // websocket = new WebSocket("ws://echo.websocket.org");
         // websocket = new WebSocket("ws://localhost:3000");
-        websocket = new WebSocket("wss://jhseodev1.site/api/room/ws");
+        websocket = new WebSocket("wss://jhseodev1.site/api/game/ws/:hnj");
         
         websocket.OnOpen += () =>
         {
@@ -63,8 +71,16 @@ public class Connection : MonoBehaviour
 
         // Keep sending messages at every 0.3s
         InvokeRepeating("[KHU] SendWebSocketMessage", 0.0f, 0.3f);
+        
+        Debug.Log($"[KHW] asdf");
 
         await websocket.Connect();
+        
+        Debug.Log($"[KHW] asdf2");
+        
+        await websocket.SendText(new UserData().SaveToString());
+        
+        Debug.Log($"[KHW] asdf3");
     }
 
     private void Update()
