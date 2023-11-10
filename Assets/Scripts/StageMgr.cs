@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -27,7 +25,7 @@ public class StageMgr : MonoBehaviour
     void Awake()
     {
         Inst = this;
-       // Stage = PlayerPrefs.GetInt("Stage"); //½ºÅ×ÀÌÁö¸¦ ºÒ·¯¿Â´Ù
+       // Stage = PlayerPrefs.GetInt("Stage"); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò·ï¿½ï¿½Â´ï¿½
         Inst.StageList.Add(new Stage(true, false, false));
         Inst.StageList.Add(new Stage(false, true, false));
         Inst.StageList.Add(new Stage(false, false, true));
@@ -53,7 +51,7 @@ public class StageMgr : MonoBehaviour
         LogicValue.ScoreReset();
         Timer.TimerOFF();
         SceneManager.LoadScene("GameOver");
-        PlayerPrefs.SetInt("Stage", Stage); //½ºÅ×ÀÌÁö¸¦ ÀúÀåÇÑ´Ù
+        PlayerPrefs.SetInt("Stage", Stage); //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½
     }
     public void ZeroClear()
     {
