@@ -11,7 +11,8 @@ public class Piece : MonoBehaviour
 
     private float stepTime;
     private float lockTime;
-
+    private float BlockMoveTime;
+    private float BlockMoveDelay = 0.25f;
     public void Initialize(Board board, Vector3Int position, TetrominoData data)
     {
         this.board = board;
@@ -20,7 +21,7 @@ public class Piece : MonoBehaviour
         this.rotationIndex = 0;
         this.stepTime = Time.time + LogicValue.BlockSpeed;
         this.lockTime = 0f;
-
+        this.BlockMoveTime = 0f;
         if (this.cells == null)
         {
             this.cells = new Vector3Int[data.cells.Length];
@@ -37,7 +38,7 @@ public class Piece : MonoBehaviour
         
         this.board.Clear(this);
         this.lockTime += Time.deltaTime;
-
+        this.BlockMoveTime += Time.deltaTime;
         if (Input.GetKeyDown(KeyCode.J))
         {
             Rotate(-1);
@@ -47,13 +48,22 @@ public class Piece : MonoBehaviour
             Rotate(1);
         }
 
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKey(KeyCode.A))
         {
-            Move(Vector2Int.left);
+            if (BlockMoveTime > BlockMoveDelay)
+            {
+
+                Move(Vector2Int.left);
+                BlockMoveTime = 0f;
+            }
         }
-        else if (Input.GetKeyDown(KeyCode.D))
+        else if (Input.GetKey(KeyCode.D))
         {
-            Move(Vector2Int.right);
+            if (BlockMoveTime > BlockMoveDelay)
+            {
+                Move(Vector2Int.right);
+                BlockMoveTime = 0f;
+            }
         }
         if (Input.GetKeyDown(KeyCode.S))
         {

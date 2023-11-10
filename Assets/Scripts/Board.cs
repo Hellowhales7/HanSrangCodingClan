@@ -19,7 +19,11 @@ public class Board : MonoBehaviour
     public Vector3Int spawnPosition;
     public Vector3Int[] ExpectSpawnPos;
     public Vector2Int boardSize = new Vector2Int(10, 20);
+    private int BlockIndex = 0;
+    private int BlockMaxIndex = 7;
+    private List<int> TetrominoShuffer = new List<int>();
     private List<TetrominoData> tetrominoDatas = new List<TetrominoData>();
+
     public RectInt Bounds
     {
         get
@@ -29,8 +33,24 @@ public class Board : MonoBehaviour
             return new RectInt(position, this.boardSize);
         }
     }
-    
-   
+
+    private List<T> ShuffleList<T>(List<T> list)
+    {
+        int random1, random2;
+        T temp;
+
+        for (int i = 0; i < list.Count; ++i)
+        {
+            random1 = Random.Range(0, list.Count);
+            random2 = Random.Range(0, list.Count);
+
+            temp = list[random1];
+            list[random1] = list[random2];
+            list[random2] = temp;
+        }
+
+        return list;
+    }
     private void Awake()
     {
         tilemap = GetComponentInChildren<Tilemap>();
@@ -42,6 +62,13 @@ public class Board : MonoBehaviour
         {
             tetrominoes[i].Initialize();
         }
+        for(int i=0;i< BlockMaxIndex;i++)
+        {
+            TetrominoShuffer.Add(i);
+        }
+        ShuffleList(TetrominoShuffer);
+
+        this.tilemap.SetTile(new Vector3Int(3,-5,0),tileBase);
     }
 
     private void Start()
@@ -60,9 +87,14 @@ public class Board : MonoBehaviour
     public void SpawnPiece()
     {
         for(; tetrominoDatas.Count < 4;) {
-            int random = Random.Range(0, tetrominoes.Length);
-            TetrominoData data = tetrominoes[random];
-            Debug.Log(data.tetromino);
+            //int random = Random.Range(0, tetrominoes.Length);
+            if(BlockIndex>=BlockMaxIndex)
+            {
+                ShuffleList(TetrominoShuffer);
+                BlockIndex = 0;
+            }
+            TetrominoData data = tetrominoes[TetrominoShuffer[BlockIndex]];
+            BlockIndex++;
             tetrominoDatas.Add(data);
             for(int i = 0; i < 3; i++)
                 HardClear(ExpectSpawnPos[i]);
@@ -202,7 +234,7 @@ public class Board : MonoBehaviour
                 LogicValue.Score += LogicValue.GetScore;
                 Timer.TimeComsume(LogicValue.TimeConsume);
                 Debug.Log(LogicValue.BlockSpeed);
-               // Debug.Log(StageMgr.StageArr[0].SpeedUp);
+                // Debug.Log(StageMgr.StageArr[0].SpeedUp);
             }
             else
             {
@@ -228,7 +260,7 @@ public class Board : MonoBehaviour
     private void LineClear(int row)
     {
         RectInt bounds = this.Bounds;
-
+        AudioManager.instance.PlaySfx(AudioManager.Sfx.BlockBomb);
         for (int col = bounds.xMin; col < bounds.xMax; col++)
         {
             Vector3Int position = new Vector3Int(col, row, 0);
@@ -248,5 +280,9 @@ public class Board : MonoBehaviour
             }
             row++;
         }
+        LetterData SendData = new LetterData();
+        string json = JsonUtility.ToJson(SendData);
+        Debug.Log(json);
+
     }
 }
