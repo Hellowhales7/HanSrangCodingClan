@@ -459,7 +459,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -317, y: -185.8}
+  m_AnchoredPosition: {x: -809, y: 338}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &704068188
@@ -509,8 +509,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 34
+  m_fontSizeBase: 34
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -692,7 +692,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -311.8, y: -129.7}
+  m_AnchoredPosition: {x: -730, y: 414}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &906510946
@@ -730,6 +730,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileBase: {fileID: 11400000, guid: 9447c62a042f32042868b041e6e2ff1d, type: 2}
+  StaticTile: {fileID: 11400000, guid: db465b3a688cf644c8033da6a4f7fc2d, type: 2}
   tetrominoes:
   - tetromino: 0
     tile: {fileID: 11400000, guid: bd0b7721fd472be47afebc7a476524a7, type: 2}
@@ -1048,7 +1049,7 @@ Transform:
   m_GameObject: {fileID: 1284443951}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 9.61, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1712,7 +1713,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -292.7, y: -185.8}
+  m_AnchoredPosition: {x: -781, y: 338}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1569592351
@@ -1798,7 +1799,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 102.74572, y: 0.000000009870789, z: 27.295116, w: 14.117926}
+  m_margin: {x: 102.74572, y: 0.000000009870789, z: 39.11762, w: 9.972282}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -1993,7 +1994,7 @@ MonoBehaviour:
   Minute: {fileID: 704068188}
   Seconds: {fileID: 1569592351}
   Score: {fileID: 759893464}
-  m_time: 179.9
+  m_time: 82
 --- !u!1 &1862550087
 GameObject:
   m_ObjectHideFlags: 0

@@ -64,11 +64,11 @@ public class LogicValue : MonoBehaviour
     }
     public static void SpeedUp()
     {
-        Inst.m_BlockData.BlockSpeed -= 0.3f;
+        Inst.m_BlockData.BlockSpeed -= 0;
     }
     public static void SpeedDown()
     {
-        Inst.m_BlockData.BlockSpeed += 0.3f;
+        Inst.m_BlockData.BlockSpeed += 0;
     }
     public static void SpawnCover()
     {

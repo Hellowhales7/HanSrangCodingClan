@@ -6,6 +6,6 @@ public static class Map
 {
     public static void RandomMap()
     {
-
+        
     }
 }
