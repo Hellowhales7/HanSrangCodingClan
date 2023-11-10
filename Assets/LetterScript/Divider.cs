@@ -8,6 +8,8 @@ using Unity.VisualScripting;
 
 public class KoreanCharacterUtils
 {
+
+
     private const int BASE_CODE = 44032;
     private const int CHOSUNG = 588;
     private const int JUNGSUNG = 28;
@@ -20,7 +22,6 @@ public class KoreanCharacterUtils
 
     public static int GetChosung(char word)
     {
-        UnityEngine.Debug.Log(word);
         return GetCharCode(word) / CHOSUNG;
     }
 

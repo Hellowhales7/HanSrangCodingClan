@@ -20,7 +20,7 @@ public class AudioManager : MonoBehaviour
 
     public enum Sfx 
     {
-        BlockBomb, temp
+        CR, RCR, Start, BreakBlock,HardDrop,Right,Left, Word_Correct, Word_No_element, word_refill, word_wrong
     };
 
     private void Awake()
@@ -49,7 +49,8 @@ public class AudioManager : MonoBehaviour
             sfxPlayers[index].playOnAwake = false;
             sfxPlayers[index].volume = sfxVolume;
         }
-        AudioManager.instance.PlayBgm(true);
+        AudioManager.instance.PlaySfx(AudioManager.Sfx.Start);
+        //AudioManager.instance.PlayBgm(true);
     }
     public void PlayBgm(bool isPlay)
     {

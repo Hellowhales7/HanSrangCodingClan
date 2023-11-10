@@ -41,10 +41,12 @@ public class Piece : MonoBehaviour
         this.BlockMoveTime += Time.deltaTime;
         if (Input.GetKeyDown(KeyCode.J))
         {
+            AudioManager.instance.PlaySfx(AudioManager.Sfx.RCR);
             Rotate(-1);
         }
         else if (Input.GetKeyDown(KeyCode.L))
         {
+            AudioManager.instance.PlaySfx(AudioManager.Sfx.CR);
             Rotate(1);
         }
 
@@ -52,7 +54,7 @@ public class Piece : MonoBehaviour
         {
             if (BlockMoveTime > BlockMoveDelay)
             {
-
+               // AudioManager.instance.PlaySfx(AudioManager.Sfx.Left);
                 Move(Vector2Int.left);
                 BlockMoveTime = 0f;
             }
@@ -61,6 +63,7 @@ public class Piece : MonoBehaviour
         {
             if (BlockMoveTime > BlockMoveDelay)
             {
+               // AudioManager.instance.PlaySfx(AudioManager.Sfx.Right);
                 Move(Vector2Int.right);
                 BlockMoveTime = 0f;
             }
@@ -72,6 +75,7 @@ public class Piece : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.K))
         {
             HardDrop();
+            AudioManager.instance.PlaySfx(AudioManager.Sfx.HardDrop);
         }
         if (Time.time >= this.stepTime)
         {
