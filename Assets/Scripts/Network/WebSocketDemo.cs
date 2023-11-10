@@ -10,10 +10,11 @@ using HybridWebSocket;
 public class UserData
 {
     // userType은 tetris 또는 wordguess
-    public string userType = SceneManager.GetActiveScene().name;
+    public string userType = "tetris";
 
     public string SaveToString()
     {
+        // Debug.Log($"[KHW] userType: {userType}");
         return JsonUtility.ToJson(this);
     }
 }

@@ -11,22 +11,22 @@ public class LetterLogic : MonoBehaviour
     public TMP_Text[] LetterUI;
     public TMP_Text ScoreUI;
     public static int count=0;
-    // ÇÑ±Û ÀÚÀ½°ú ¸ğÀ½À» Å°·Î ÇÏ´Â Dictionary »ı¼º
+    // í•œê¸€ ììŒê³¼ ëª¨ìŒì„ í‚¤ë¡œ í•˜ëŠ” Dictionary ìƒì„±
     public static Dictionary<string, int> koreanDictionary = new Dictionary<string, int>();
     public static int score = 0;
     string jsonString;
     private void Awake()
     {
         Inst = this;
-        // ÇÑ±Û ÀÚÀ½ Ãß°¡
-        string[] chosung = { "¤¡", "¤¢", "¤¤", "¤§", "¤¨", "¤©", "¤±", "¤²", "¤³", "¤µ", "¤¶", "¤·", "¤¸", "¤¹", "¤º", "¤»", "¤¼", "¤½", "¤¾" };
+        // í•œê¸€ ììŒ ì¶”ê°€
+        string[] chosung = { "ã„±", "ã„²", "ã„´", "ã„·", "ã„¸", "ã„¹", "ã…", "ã…‚", "ã…ƒ", "ã……", "ã…†", "ã…‡", "ã…ˆ", "ã…‰", "ã…Š", "ã…‹", "ã…Œ", "ã…", "ã…" };
         foreach (string ch in chosung)
         {
             koreanDictionary[ch] = 0;
         }
 
-        // ÇÑ±Û ¸ğÀ½ Ãß°¡
-        string[] jungsung = { "¤¿", "¤À", "¤Á", "¤Â", "¤Ã", "¤Ä", "¤Å", "¤Æ", "¤Ç", "¤È", "¤É", "¤Ê", "¤Ë", "¤Ì", "¤Í", "¤Î", "¤Ï", "¤Ğ", "¤Ñ", "¤Ò", "¤Ó" };
+        // í•œê¸€ ëª¨ìŒ ì¶”ê°€
+        string[] jungsung = { "ã…", "ã…", "ã…‘", "ã…’", "ã…“", "ã…”", "ã…•", "ã…–", "ã…—", "ã…˜", "ã…™", "ã…š", "ã…›", "ã…œ", "ã…", "ã…", "ã…Ÿ", "ã… ", "ã…¡", "ã…¢", "ã…£" };
         foreach (string jv in jungsung)
         {
             koreanDictionary[jv] = 0;
@@ -35,9 +35,9 @@ public class LetterLogic : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //string jsonString = "{\"Type\":\"Letter\",\"Data\":[\"¤µ\",\"¤¾\",\"¤»\",\"¤½\",\"¤¼\",\"¤¾\",\"¤¢\",\"¤¿\",\"¤Ç\",\"¤Ó\"]}"; // JSON ¹®ÀÚ¿­À» °¡Á®¿É´Ï´Ù
+        //string jsonString = "{\"Type\":\"Letter\",\"Data\":[\"ã……\",\"ã…\",\"ã…‹\",\"ã…\",\"ã…Œ\",\"ã…\",\"ã„²\",\"ã…\",\"ã…—\",\"ã…£\"]}"; // JSON ë¬¸ìì—´ì„ ê°€ì ¸ì˜µë‹ˆë‹¤
 
-        //// JSON ¹®ÀÚ¿­À» LetterData °´Ã¼·Î ¿ªÁ÷·ÄÈ­
+        //// JSON ë¬¸ìì—´ì„ LetterData ê°ì²´ë¡œ ì—­ì§ë ¬í™”
         //LetterData Data = JsonUtility.FromJson<LetterData>(jsonString);
 
         //for (int i = 0; i < Data.Data.Length; i++)
@@ -49,7 +49,7 @@ public class LetterLogic : MonoBehaviour
         //    }
         //}
 
-        //Debug.Log(koreanDictionary["¤µ"]);
+        //Debug.Log(koreanDictionary["ã……"]);
     }
 
     // Update is called once per frame
@@ -70,7 +70,7 @@ public class LetterLogic : MonoBehaviour
                 }
             }
         }
-        string[] All = { "¤¡", "¤¢", "¤¤", "¤§", "¤¨", "¤©", "¤±", "¤²", "¤³", "¤µ", "¤¶", "¤·", "¤¸", "¤¹", "¤º", "¤»", "¤¼", "¤½", "¤¾", "¤¿", "¤À", "¤Á", "¤Â", "¤Ã", "¤Ä", "¤Å", "¤Æ", "¤Ç", "¤È", "¤É", "¤Ê", "¤Ë", "¤Ì", "¤Í", "¤Î", "¤Ï", "¤Ğ", "¤Ñ", "¤Ò", "¤Ó" };
+        string[] All = { "ã„±", "ã„²", "ã„´", "ã„·", "ã„¸", "ã„¹", "ã…", "ã…‚", "ã…ƒ", "ã……", "ã…†", "ã…‡", "ã…ˆ", "ã…‰", "ã…Š", "ã…‹", "ã…Œ", "ã…", "ã…", "ã…", "ã…", "ã…‘", "ã…’", "ã…“", "ã…”", "ã…•", "ã…–", "ã…—", "ã…˜", "ã…™", "ã…š", "ã…›", "ã…œ", "ã…", "ã…", "ã…Ÿ", "ã… ", "ã…¡", "ã…¢", "ã…£" };
         int temp = 0;
 
         for(int i =0; i<25;i++)

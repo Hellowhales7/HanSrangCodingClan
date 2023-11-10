@@ -1,17 +1,38 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.Networking;
+
+[Serializable]
+public class WordRequestData
+{
+    public string word;
+
+    public string SaveToString()
+    {
+        return JsonUtility.ToJson(this);
+    }
+}
+
+[Serializable]
+public class WordResponseData
+{
+    public string description;
+    public bool isCorrect;
+}
 
 public class InputLetter : MonoBehaviour
 {
+    private bool isFinished;
+    private bool isCorrect;
 
-    public static string[] KOR_CHOSUNG_LIST = new string[] { "¤¡", "¤¢", "¤¤", "¤§", "¤¨", "¤©", "¤±", "¤²", "¤³", "¤µ", "¤¶", "¤·", "¤¸", "¤¹", "¤º", "¤»", "¤¼", "¤½", "¤¾" };
+    public static string[] KOR_CHOSUNG_LIST = new string[] { "ã„±", "ã„²", "ã„´", "ã„·", "ã„¸", "ã„¹", "ã…", "ã…‚", "ã…ƒ", "ã……", "ã…†", "ã…‡", "ã…ˆ", "ã…‰", "ã…Š", "ã…‹", "ã…Œ", "ã…", "ã…" };
 
-    public static string[] KOR_JUNGSUNG_LIST = new string[] { "¤¿", "¤À", "¤Á", "¤Â", "¤Ã", "¤Ä", "¤Å", "¤Æ", "¤Ç", "¤È", "¤É", "¤Ê", "¤Ë", "¤Ì", "¤Í", "¤Î", "¤Ï", "¤Ğ", "¤Ñ", "¤Ò", "¤Ó" };
+    public static string[] KOR_JUNGSUNG_LIST = new string[] { "ã…", "ã…", "ã…‘", "ã…’", "ã…“", "ã…”", "ã…•", "ã…–", "ã…—", "ã…˜", "ã…™", "ã…š", "ã…›", "ã…œ", "ã…", "ã…", "ã…Ÿ", "ã… ", "ã…¡", "ã…¢", "ã…£" };
 
-    public static string[] KOR_JONGSUNG_LIST = new string[] { "", "¤¡", "¤¢", "¤£", "¤¤", "¤¥", "¤¦", "¤§", "¤©", "¤ª", "¤«", "¤¬", "¤­", "¤®", "¤¯", "¤°", "¤±", "¤²", "¤´", "¤µ", "¤¶", "¤·", "¤¸", "¤º", "¤»", "¤¼", "¤½", "¤¾" };
+    public static string[] KOR_JONGSUNG_LIST = new string[] { "", "ã„±", "ã„²", "ã„³", "ã„´", "ã„µ", "ã„¶", "ã„·", "ã„¹", "ã„º", "ã„»", "ã„¼", "ã„½", "ã„¾", "ã„¿", "ã…€", "ã…", "ã…‚", "ã…„", "ã……", "ã…†", "ã…‡", "ã…ˆ", "ã…Š", "ã…‹", "ã…Œ", "ã…", "ã…" };
 
 
     public TMP_Text WordInput;
@@ -20,14 +41,14 @@ public class InputLetter : MonoBehaviour
     private void Awake()
     {
         Word = WordInput.text;
-        string[] chosung = { "¤¡", "¤¢", "¤¤", "¤§", "¤¨", "¤©", "¤±", "¤²", "¤³", "¤µ", "¤¶", "¤·", "¤¸", "¤¹", "¤º", "¤»", "¤¼", "¤½", "¤¾" };
+        string[] chosung = { "ã„±", "ã„²", "ã„´", "ã„·", "ã„¸", "ã„¹", "ã…", "ã…‚", "ã…ƒ", "ã……", "ã…†", "ã…‡", "ã…ˆ", "ã…‰", "ã…Š", "ã…‹", "ã…Œ", "ã…", "ã…" };
         foreach (string ch in chosung)
         {
             MyWord[ch] = 0;
         }
 
-        // ÇÑ±Û ¸ğÀ½ Ãß°¡
-        string[] jungsung = { "¤¿", "¤À", "¤Á", "¤Â", "¤Ã", "¤Ä", "¤Å", "¤Æ", "¤Ç", "¤È", "¤É", "¤Ê", "¤Ë", "¤Ì", "¤Í", "¤Î", "¤Ï", "¤Ğ", "¤Ñ", "¤Ò", "¤Ó" };
+        // í•œê¸€ ëª¨ìŒ ì¶”ê°€
+        string[] jungsung = { "ã…", "ã…", "ã…‘", "ã…’", "ã…“", "ã…”", "ã…•", "ã…–", "ã…—", "ã…˜", "ã…™", "ã…š", "ã…›", "ã…œ", "ã…", "ã…", "ã…Ÿ", "ã… ", "ã…¡", "ã…¢", "ã…£" };
         foreach (string jv in jungsung)
         {
             MyWord[jv] = 0;
@@ -36,7 +57,7 @@ public class InputLetter : MonoBehaviour
 
     private void Update()
     {
-        //Å°º¸µå
+        //í‚¤ë³´ë“œ
         if (Word.Length > 0 && Input.GetKeyDown(KeyCode.Return))
         {
             InputName();
@@ -45,15 +66,17 @@ public class InputLetter : MonoBehaviour
         }
     }
 
-    //¸¶¿ì½º
+    //ë§ˆìš°ìŠ¤
     public void InputName()
     {
         Word = WordInput.text;
        // Debug.Log(KOR_CHOSUNG_LIST[KoreanCharacterUtils.GetChosung(Word[0])]);
     }
-    bool Verifier()
+    
+    private bool Verifier()
     {
-        string[] All = { "¤¡", "¤¢", "¤¤", "¤§", "¤¨", "¤©", "¤±", "¤²", "¤³", "¤µ", "¤¶", "¤·", "¤¸", "¤¹", "¤º", "¤»", "¤¼", "¤½", "¤¾", "¤¿", "¤À", "¤Á", "¤Â", "¤Ã", "¤Ä", "¤Å", "¤Æ", "¤Ç", "¤È", "¤É", "¤Ê", "¤Ë", "¤Ì", "¤Í", "¤Î", "¤Ï", "¤Ğ", "¤Ñ", "¤Ò", "¤Ó" };
+        string[] All = { "ã„±", "ã„²", "ã„´", "ã„·", "ã„¸", "ã„¹", "ã…", "ã…‚", "ã…ƒ", "ã……", "ã…†", "ã…‡", "ã…ˆ", "ã…‰", "ã…Š", "ã…‹", "ã…Œ", "ã…", "ã…", "ã…", "ã…", "ã…‘", "ã…’", "ã…“", "ã…”", "ã…•", "ã…–", "ã…—", "ã…˜", "ã…™", "ã…š", "ã…›", "ã…œ", "ã…", "ã…", "ã…Ÿ", "ã… ", "ã…¡", "ã…¢", "ã…£" };
+
         for (int i=0;i<Word.Length-1;i++)
         {
             //Debug.Log(Word[i]);
@@ -78,15 +101,54 @@ public class InputLetter : MonoBehaviour
                 return false;
             }
         }
+        
+        // ê²€ì¦ ë¡œì§
+        StartCoroutine(SendPost("http://13.209.164.126:8000/api/game/verify", JsonUtility.ToJson(new WordRequestData())));
+
+        while (!isFinished)
+        {
+            StartCoroutine(SleepTime());
+        }
+
+        if (isCorrect == false)
+            return false;
+        
+        // í˜•íƒœì†Œ ë¶„ì„
         for (int i = 0; i < All.Length; i++)
         {
             LetterLogic.koreanDictionary[All[i]] = LetterLogic.koreanDictionary[All[i]] - MyWord[All[i]];
             LetterLogic.count = LetterLogic.count - MyWord[All[i]];
             MyWord[All[i]] = 0;
         }
+
         LetterLogic.score += 100;
         return true;
     }
+    
+    private IEnumerator SendPost(string url, string json)
+    {
+        var request = UnityWebRequest.PostWwwForm(url, json);
+
+        yield return request.SendWebRequest();
+        
+        // ì—ëŸ¬ ë°œìƒ ì‹œ
+        if (request.result is UnityWebRequest.Result.ConnectionError or UnityWebRequest.Result.ProtocolError)
+        {
+            Debug.Log(request.error);
+            yield break;
+        }
+        
+        var data = JsonUtility.FromJson<WordResponseData>(request.downloadHandler.text);
+
+        isCorrect = data.isCorrect;
+        isFinished = true;
+    }
+
+    private IEnumerator SleepTime()
+    {
+        yield return new WaitForSeconds(1000);
+    }
+
     void NoLetter()
     {
         Debug.Log("No Letter");
