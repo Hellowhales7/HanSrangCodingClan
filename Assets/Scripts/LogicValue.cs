@@ -47,6 +47,7 @@ public class LogicValue : MonoBehaviour
     private void Awake()
     {
         Inst = this;
+        
     }
 
     public static void ScoreReset()

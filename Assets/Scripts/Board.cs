@@ -94,6 +94,7 @@ public class Board : MonoBehaviour
     {
         Timer.TimerON();
         SpawnPiece();
+        AudioManager.instance.PlayBgm(true);
     }
     private void Update()
     {
@@ -279,7 +280,7 @@ public class Board : MonoBehaviour
     private void LineClear(int row)
     {
         RectInt bounds = this.Bounds;
-        AudioManager.instance.PlaySfx(AudioManager.Sfx.BlockBomb);
+        AudioManager.instance.PlaySfx(AudioManager.Sfx.BreakBlock);
         for (int col = bounds.xMin; col < bounds.xMax; col++)
         {
             Vector3Int position = new Vector3Int(col, row, 0);
