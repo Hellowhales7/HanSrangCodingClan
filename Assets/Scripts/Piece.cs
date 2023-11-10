@@ -90,6 +90,7 @@ public class Piece : MonoBehaviour
     {
         while (Move(Vector2Int.down))
             continue;
+        Lock();
     }
     private bool Move(Vector2Int translation)
     {
