@@ -11,6 +11,7 @@ public class Board : MonoBehaviour
 {
     public Tilemap tilemap { get; private set; }
     public TileBase tileBase;
+    public TileBase StaticTile;
     public Piece activePiece { get; private set; }
     public StaticPiece stPiece { get; private set; }
     public StaticPiece1 stPiece1 { get; private set; }
@@ -33,7 +34,6 @@ public class Board : MonoBehaviour
             return new RectInt(position, this.boardSize);
         }
     }
-
     private List<T> ShuffleList<T>(List<T> list)
     {
         int random1, random2;
@@ -68,7 +68,26 @@ public class Board : MonoBehaviour
         }
         ShuffleList(TetrominoShuffer);
 
-        this.tilemap.SetTile(new Vector3Int(3,-5,0),tileBase);
+        RandomMap();
+    }
+
+    private void RandomMap()
+    {
+        Vector3Int startPos = new Vector3Int(-5, -10, 0);
+        List<int> list = new List<int>();
+        for(int i=0;i<10;i++)
+        {
+            list.Add(i);
+        }
+        for(int i=0;i<5;i++)
+        {
+            ShuffleList(list);
+            for(int j= 0;j<6;j++)
+            {
+                Vector3Int index = new Vector3Int(list[j], i, 0);
+                this.tilemap.SetTile(startPos + index, StaticTile);
+            }
+        }
     }
 
     private void Start()
