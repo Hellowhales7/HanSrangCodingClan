@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 // Use plugin namespace
 using HybridWebSocket;
 
@@ -10,7 +10,7 @@ using HybridWebSocket;
 public class UserData
 {
     // userType은 tetris 또는 wordguess
-    public string userType = "tetris";
+    public string userType = SceneManager.GetActiveScene().name;
 
     public string SaveToString()
     {
