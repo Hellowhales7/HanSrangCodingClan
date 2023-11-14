@@ -25,7 +25,7 @@ public class StageMgr : MonoBehaviour
     void Awake()
     {
         Inst = this;
-       // Stage = PlayerPrefs.GetInt("Stage"); //���������� �ҷ��´�
+       // Stage = PlayerPrefs.GetInt("Stage");  // 스테이지를 불러온다
         Inst.StageList.Add(new Stage(true, false, false));
         Inst.StageList.Add(new Stage(false, true, false));
         Inst.StageList.Add(new Stage(false, false, true));
@@ -51,7 +51,7 @@ public class StageMgr : MonoBehaviour
         LogicValue.ScoreReset();
         Timer.TimerOFF();
         SceneManager.LoadScene("GameOver");
-        PlayerPrefs.SetInt("Stage", Stage); //���������� �����Ѵ�
+        PlayerPrefs.SetInt("Stage", Stage);  // 스테이지를 저장한다
     }
     public void ZeroClear()
     {

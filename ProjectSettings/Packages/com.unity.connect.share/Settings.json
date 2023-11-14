@@ -19,7 +19,7 @@
             {
                 "type": "System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
                 "key": "buildOutputDirList",
-                "value": "{\"m_Value\":\"D:/UnityBuild/20231111_0620_HanSrangCodingClan_Build;D:/UnityBuild/20231111_0218_HanSrangCodingClan_Build;D:/Unity/HanSrangCodingClan/WebGL Builds;;;;;;;\"}"
+                "value": "{\"m_Value\":\"D:/Unity/HanSrangCodingClan/WebGL Builds;D:/UnityBuild/20231111_0931_HanSrangCodingClan_Build;D:/UnityBuild/20231111_0921_HanSrangCodingClan_Build;D:/UnityBuild/20231111_0919_HanSrangCodingClan_Build;D:/UnityBuild/20231111_0904_HanSrangCodingClan_Build;D:/UnityBuild/20231111_0900_HanSrangCodingClan_Build;D:/UnityBuild/20231111_0620_HanSrangCodingClan_Build;D:/UnityBuild/20231111_0218_HanSrangCodingClan_Build;;\"}"
             }
         ]
     }

@@ -3,5 +3,6 @@
   <component name="Encoding" addBOMForNewFiles="with BOM under Windows, with no BOM otherwise">
     <file url="file://$PROJECT_DIR$/Assets/LetterScript/InputLetter.cs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Assets/LetterScript/LetterLogic.cs" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Assets/Scripts/Letter.cs" charset="UTF-8" />
   </component>
 </project>

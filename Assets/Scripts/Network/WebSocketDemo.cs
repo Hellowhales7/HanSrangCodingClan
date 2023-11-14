@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 // Use plugin namespace
 using HybridWebSocket;
 
@@ -41,7 +40,7 @@ public class WebSocketDemo : MonoBehaviour
     {
         // Create WebSocket instance
         // var ws = WebSocketFactory.CreateInstance("ws://echo.websocket.org");
-        ws = WebSocketFactory.CreateInstance("ws://13.209.164.126:8000/api/game/ws/hnj");
+        ws = WebSocketFactory.CreateInstance("ws://54.180.46.156:8000/api/game/ws/hnj");
 
         // Add OnOpen event listener
         ws.OnOpen += () =>

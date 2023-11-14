@@ -25,8 +25,8 @@ public class WordResponseData
 
 public class InputLetter : MonoBehaviour
 {
-    private bool isFinished;
-    private bool isCorrect;
+    // private bool isFinished;
+    // private bool isCorrect;
 
     public static string[] KOR_CHOSUNG_LIST = new string[] { "ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ" };
 
@@ -75,8 +75,8 @@ public class InputLetter : MonoBehaviour
     
     private bool Verifier()
     {
-        isFinished = false;
-        isCorrect = false;
+        // isFinished = false;
+        // isCorrect = false;
         
         string[] All = { "ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ", "ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅘ", "ㅙ", "ㅚ", "ㅛ", "ㅜ", "ㅝ", "ㅞ", "ㅟ", "ㅠ", "ㅡ", "ㅢ", "ㅣ" };
 
@@ -106,15 +106,12 @@ public class InputLetter : MonoBehaviour
         }
         
         // 검증 로직
-        StartCoroutine(SendPost("http://13.209.164.126:8000/api/game/verify", JsonUtility.ToJson(new WordRequestData())));
+        // StartCoroutine(SendPost("http://13.209.164.126:8000/api/game/verify", JsonUtility.ToJson(new WordRequestData())));
 
-        while (!isFinished)
-        {
-            StartCoroutine(SleepTime());
-        }
+        // StartCoroutine(SleepTime());
 
-        if (isCorrect == false)
-            return false;
+        // if (isCorrect == false)
+        //     return false;
         
         // 형태소 분석
         for (int i = 0; i < All.Length; i++)
@@ -143,8 +140,8 @@ public class InputLetter : MonoBehaviour
         
         var data = JsonUtility.FromJson<WordResponseData>(request.downloadHandler.text);
 
-        isCorrect = data.isCorrect;
-        isFinished = true;
+        // isCorrect = data.isCorrect;
+        // isFinished = true;
     }
 
     private IEnumerator SleepTime()
