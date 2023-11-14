@@ -55,9 +55,9 @@ public class LetterLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(WebSocketDemo.Instance.wsQueue.Count >0)
+        if (WebSocketDemo.Instance.wsQueue.Count > 0)
         {
-            jsonString =WebSocketDemo.Instance.wsQueue.Dequeue();
+            jsonString = WebSocketDemo.Instance.wsQueue.Dequeue();
 
             LetterData Data = JsonUtility.FromJson<LetterData>(jsonString);
 
@@ -73,13 +73,13 @@ public class LetterLogic : MonoBehaviour
         string[] All = { "ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ", "ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅘ", "ㅙ", "ㅚ", "ㅛ", "ㅜ", "ㅝ", "ㅞ", "ㅟ", "ㅠ", "ㅡ", "ㅢ", "ㅣ" };
         int temp = 0;
 
-        for(int i =0; i<25;i++)
+        for (int i = 0; i < 25; i++)
         {
             LetterUI[i].text = null;
         }
         for (int j = 0; j < All.Length; j++)
         {
-            if (koreanDictionary[All[j]] >0)
+            if (koreanDictionary[All[j]] > 0)
             {
                 for (int k = koreanDictionary[All[j]]; k > 0; k--)
                 {
