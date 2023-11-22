@@ -1,7 +1,9 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Tilemaps;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using TMPro;
 
 public class Board : MonoBehaviour
 {
@@ -20,6 +22,9 @@ public class Board : MonoBehaviour
     private int BlockMaxIndex = 7;
     private List<int> TetrominoShuffer = new List<int>();
     private List<TetrominoData> tetrominoDatas = new List<TetrominoData>();
+    
+    [SerializeField]
+    private TMP_Text _ScoreUI;
 
     public RectInt Bounds
     {
@@ -348,9 +353,18 @@ public class Board : MonoBehaviour
             row++;
         }
 
-        var json = JsonUtility.ToJson(new LetterData());
+        if (_ScoreUI == null)
+        {
+            var json = JsonUtility.ToJson(new LetterData());
 
-        WebSocketManager.Instance.SendGameLogic(json);
-        // Debug.Log(json);
+            WebSocketManager.Instance.SendGameLogic(json);
+            // Debug.Log(json);
+        }
+        else
+        {
+            LetterLogic.score += 100;
+            _ScoreUI.text = LetterLogic.score.ToString();
+            
+        }
     }
 }

@@ -42,8 +42,8 @@ public class WebSocketManager : MonoBehaviour
         // Add OnOpen event listener
         ws.OnOpen += () =>
         {
-            // Debug.Log("WS connected!");
-            // Debug.Log($"WS state: {ws.GetState()}");
+            Debug.Log("WS connected!");
+            Debug.Log($"WS state: {ws.GetState()}");
 
             // ws.Send(Encoding.UTF8.GetBytes("Hello from Unity 3D!"));
             SendGameLogic(new RequestJoinData("wordguess").ObjectToJson());
@@ -72,12 +72,16 @@ public class WebSocketManager : MonoBehaviour
 
     private IEnumerator UpdateReceivedPacket()
     {
-        if (receivedPacketQueue.Count <= 0)
+        while (true)
         {
-            yield return _waitForSeconds;
-        }
+            if (receivedPacketQueue.Count <= 0)
+            {
+                yield return _waitForSeconds;
+                continue;
+            }
 
-        ReceiveGameLogic(receivedPacketQueue.Dequeue());
+            ReceiveGameLogic(receivedPacketQueue.Dequeue());
+        }
     }
 
     private void OnDestroy()

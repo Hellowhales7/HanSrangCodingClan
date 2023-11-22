@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour
@@ -75,12 +76,19 @@ public class AudioManager : MonoBehaviour
 
     public void PlaySfx(Sfx sfx)
     {
+        Debug.Log($"[KW] PlaySfx: {sfx}");
+
         for (var index = 0; index < _sfxPlayers.Length; index++)
         {
+            Debug.Log($"index: {index}");
+
             var loopIndex = (index + _channelIndex) % _sfxPlayers.Length;
 
             if (_sfxPlayers[loopIndex].isPlaying)
+            {
+                Debug.Log($"_sfxPlayers[loopIndex].isPlaying: {_sfxPlayers[loopIndex].isPlaying}");
                 continue;
+            }
 
             _channelIndex = loopIndex;
             _sfxPlayers[loopIndex].clip = sfxClips[(int)sfx];
