@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class Piece : MonoBehaviour
@@ -9,90 +8,95 @@ public class Piece : MonoBehaviour
     public Vector3Int position { get; private set; }
     public int rotationIndex { get; private set; }
 
-    private float stepTime;
-    private float lockTime;
-    private float BlockMoveTime;
-    private float BlockMoveDelay = 0.25f;
+    private float _stepTime;
+    private float _lockTime;
+    private float _blockMoveTime;
+    private const float BlockMoveDelay = 0.25f;
+
     public void Initialize(Board board, Vector3Int position, TetrominoData data)
     {
         this.board = board;
         this.data = data;
         this.position = position;
-        this.rotationIndex = 0;
-        this.stepTime = Time.time + LogicValue.BlockSpeed;
-        this.lockTime = 0f;
-        this.BlockMoveTime = 0f;
-        if (this.cells == null)
-        {
-            this.cells = new Vector3Int[data.cells.Length];
-        }
+        rotationIndex = 0;
+        _stepTime = Time.time + LogicValue.BlockSpeed;
+        _lockTime = 0f;
+        _blockMoveTime = 0f;
 
-        for (int i = 0; i < data.cells.Length; i++)
+        cells ??= new Vector3Int[data.cells.Length];
+
+        for (var i = 0; i < data.cells.Length; i++)
         {
-            this.cells[i] = (Vector3Int)data.cells[i];
+            cells[i] = (Vector3Int)data.cells[i];
         }
     }
 
     private void Update()
     {
-        
-        this.board.Clear(this);
-        this.lockTime += Time.deltaTime;
-        this.BlockMoveTime += Time.deltaTime;
+        board.Clear(this);
+        _lockTime += Time.deltaTime;
+        _blockMoveTime += Time.deltaTime;
+
         if (Input.GetKeyDown(KeyCode.J))
         {
-            AudioManager.instance.PlaySfx(AudioManager.Sfx.RCR);
+            AudioManager.Instance.PlaySfx(AudioManager.Sfx.RCR);
             Rotate(-1);
         }
         else if (Input.GetKeyDown(KeyCode.L))
         {
-            AudioManager.instance.PlaySfx(AudioManager.Sfx.CR);
+            AudioManager.Instance.PlaySfx(AudioManager.Sfx.CR);
             Rotate(1);
         }
 
         if (Input.GetKey(KeyCode.A))
         {
-            if (BlockMoveTime > BlockMoveDelay)
+            if (_blockMoveTime > BlockMoveDelay)
             {
-               // AudioManager.instance.PlaySfx(AudioManager.Sfx.Left);
+                AudioManager.Instance.PlaySfx(AudioManager.Sfx.Left);
                 Move(Vector2Int.left);
-                BlockMoveTime = 0f;
+                _blockMoveTime = 0f;
             }
         }
         else if (Input.GetKey(KeyCode.D))
         {
-            if (BlockMoveTime > BlockMoveDelay)
+            if (_blockMoveTime > BlockMoveDelay)
             {
-               // AudioManager.instance.PlaySfx(AudioManager.Sfx.Right);
+                AudioManager.Instance.PlaySfx(AudioManager.Sfx.Right);
                 Move(Vector2Int.right);
-                BlockMoveTime = 0f;
+                _blockMoveTime = 0f;
             }
         }
+
         if (Input.GetKeyDown(KeyCode.S))
         {
             Move(Vector2Int.down);
         }
+
         if (Input.GetKeyDown(KeyCode.K))
         {
             HardDrop();
-            AudioManager.instance.PlaySfx(AudioManager.Sfx.HardDrop);
+            AudioManager.Instance.PlaySfx(AudioManager.Sfx.HardDrop);
         }
-        if (Time.time >= this.stepTime)
+
+        if (Time.time >= this._stepTime)
         {
             Step();
         }
+
         this.board.Set(this);
     }
+
     private void Step()
     {
-        this.stepTime = Time.time + LogicValue.BlockSpeed;
+        this._stepTime = Time.time + LogicValue.BlockSpeed;
         Move(Vector2Int.down);
 
-        if (this.lockTime >= LogicValue.BlockLockDelay)
+        if (this._lockTime >= LogicValue.BlockLockDelay)
         {
             Lock();
         }
     }
+
     private void Lock()
     {
         this.board.Set(this);
@@ -106,6 +110,7 @@ public class Piece : MonoBehaviour
             continue;
         Lock();
     }
+
     private bool Move(Vector2Int translation)
     {
         Vector3Int newPosition = this.position;
@@ -117,67 +122,79 @@ public class Piece : MonoBehaviour
         if (valid)
         {
             this.position = newPosition;
-            this.lockTime = 0f;
+            this._lockTime = 0f;
         }
+
         return valid;
     }
+
     private void Rotate(int direction)
     {
-        int originalRotaion = this.rotationIndex;
-        this.rotationIndex = Wrap(this.rotationIndex + direction, 0, 4);
+        var originalRotation = rotationIndex;
+        rotationIndex = Wrap(rotationIndex + direction, 0, 4);
 
         ApplyRotationMatrix(direction);
 
-        if (!TestWallKicks(this.rotationIndex,direction))
+        if (TestWallKicks(rotationIndex, direction))
         {
-            this.rotationIndex = originalRotaion;
-            ApplyRotationMatrix(-direction);
+            return;
         }
+
+        rotationIndex = originalRotation;
+        ApplyRotationMatrix(-direction);
     }
+
     private void ApplyRotationMatrix(int direction)
     {
-
-        for (int i = 0; i < this.cells.Length; i++)
+        for (var i = 0; i < cells.Length; i++)
         {
-            Vector3 cell = this.cells[i];
+            Vector3 cell = cells[i];
 
             int x, y;
 
-            switch (this.data.tetromino)
+            switch (data.tetromino)
             {
                 case Tetromino.I:
                 case Tetromino.O:
                     cell.x -= 0.5f;
                     cell.y -= 0.5f;
-                    x = Mathf.CeilToInt((cell.x * Data.RotationMatrix[0] * direction) + (cell.y * Data.RotationMatrix[1] * direction));
-                    y = Mathf.CeilToInt((cell.x * Data.RotationMatrix[2] * direction) + (cell.y * Data.RotationMatrix[3] * direction));
+                    x = Mathf.CeilToInt((cell.x * Data.RotationMatrix[0] * direction) +
+                                        (cell.y * Data.RotationMatrix[1] * direction));
+                    y = Mathf.CeilToInt((cell.x * Data.RotationMatrix[2] * direction) +
+                                        (cell.y * Data.RotationMatrix[3] * direction));
                     break;
                 default:
-                    x = Mathf.RoundToInt((cell.x * Data.RotationMatrix[0] * direction) + (cell.y * Data.RotationMatrix[1] * direction));
-                    y = Mathf.RoundToInt((cell.x * Data.RotationMatrix[2] * direction) + (cell.y * Data.RotationMatrix[3] * direction));
+                    x = Mathf.RoundToInt((cell.x * Data.RotationMatrix[0] * direction) +
+                                         (cell.y * Data.RotationMatrix[1] * direction));
+                    y = Mathf.RoundToInt((cell.x * Data.RotationMatrix[2] * direction) +
+                                         (cell.y * Data.RotationMatrix[3] * direction));
                     break;
             }
 
-            this.cells[i] = new Vector3Int(x, y, 0);
+            cells[i] = new Vector3Int(x, y, 0);
         }
     }
+
     private bool TestWallKicks(int rotationIndex, int rotationDirection)
     {
-        int wallKickIndex = GetWallKickIndex(rotationIndex, rotationDirection);
+        var wallKickIndex = GetWallKickIndex(rotationIndex, rotationDirection);
 
-        for (int i = 0; i < this.data.wallKicks.GetLength(1); i++)
+        for (var i = 0; i < data.wallKicks.GetLength(1); i++)
         {
-            Vector2Int translation = this.data.wallKicks[wallKickIndex, i];
-            if(Move(translation))
+            var translation = data.wallKicks[wallKickIndex, i];
+
+            if (Move(translation))
             {
                 return true;
             }
         }
+
         return false;
     }
+
     private int GetWallKickIndex(int rotationIndex, int rotationDirection)
     {
-        int wallKickIndex = rotationIndex * 2;
+        var wallKickIndex = rotationIndex * 2;
 
         if (rotationDirection < 0)
         {
@@ -186,17 +203,14 @@ public class Piece : MonoBehaviour
 
         return Wrap(wallKickIndex, 0, this.data.wallKicks.GetLength(0));
     }
-    private int Wrap(int input, int min, int max)
+
+    private static int Wrap(int input, int min, int max)
     {
         if (input < min)
         {
             return max - (min - input) % (max - min);
         }
-        else
-        {
-            return min + (input - min) % (max - min);
-        }
+
+        return min + (input - min) % (max - min);
     }
 }
-
-

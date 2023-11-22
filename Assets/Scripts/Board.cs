@@ -1,11 +1,7 @@
-
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.Tilemaps;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
-using UnityEditor;
-using Unity.VisualScripting.FullSerializer.Internal.Converters;
 
 public class Board : MonoBehaviour
 {
@@ -34,7 +30,8 @@ public class Board : MonoBehaviour
             return new RectInt(position, this.boardSize);
         }
     }
-    private List<T> ShuffleList<T>(List<T> list)
+
+    private static void ShuffleList<T>(IList<T> list)
     {
         int random1, random2;
         T temp;
@@ -48,24 +45,26 @@ public class Board : MonoBehaviour
             list[random1] = list[random2];
             list[random2] = temp;
         }
-
-        return list;
     }
+
     private void Awake()
     {
         tilemap = GetComponentInChildren<Tilemap>();
-        this.activePiece = GetComponentInChildren<Piece>();
+        activePiece = GetComponentInChildren<Piece>();
         stPiece = GetComponent<StaticPiece>();
         stPiece1 = GetComponent<StaticPiece1>();
         stPiece2 = GetComponent<StaticPiece2>();
-        for (int i = 0; i < tetrominoes.Length; i++)
+        
+        for (var i = 0; i < tetrominoes.Length; i++)
         {
             tetrominoes[i].Initialize();
         }
-        for(int i=0;i< BlockMaxIndex;i++)
+
+        for (var i = 0; i < BlockMaxIndex; i++)
         {
             TetrominoShuffer.Add(i);
         }
+
         ShuffleList(TetrominoShuffer);
 
         RandomMap();
@@ -73,160 +72,198 @@ public class Board : MonoBehaviour
 
     private void RandomMap()
     {
-        Vector3Int startPos = new Vector3Int(-5, -10, 0);
-        List<int> list = new List<int>();
-        for(int i=0;i<10;i++)
+        var startPos = new Vector3Int(-5, -10, 0);
+        var list = new List<int>();
+
+        for (var i = 0; i < 10; i++)
         {
             list.Add(i);
         }
-        for(int i=0;i<5;i++)
+
+        for (var i = 0; i < 5; i++)
         {
             ShuffleList(list);
-            for(int j= 0;j<6;j++)
+
+            for (var j = 0; j < 6; j++)
             {
-                Vector3Int index = new Vector3Int(list[j], i, 0);
-                this.tilemap.SetTile(startPos + index, StaticTile);
+                var index = new Vector3Int(list[j], i, 0);
+
+                tilemap.SetTile(startPos + index, StaticTile);
             }
         }
     }
 
     private void Start()
     {
-        Timer.TimerON();
+        AudioManager.Instance.PlayBgm(true);
         SpawnPiece();
-        AudioManager.instance.PlayBgm(true);
+        Timer.TimerON();
     }
+
     private void Update()
     {
-        if (Timer.TimeOver())
+        if (!Timer.TimeOver())
         {
-            StageMgr.StageClear();
-            this.tilemap.ClearAllTiles();
+            return;
         }
+        
+        StageMgr.StageClear();
+        tilemap.ClearAllTiles();
     }
+
     public void SpawnPiece()
     {
-        for(; tetrominoDatas.Count < 4;) {
-            //int random = Random.Range(0, tetrominoes.Length);
-            if(BlockIndex>=BlockMaxIndex)
+        while (tetrominoDatas.Count < 4)
+        {
+            // int random = Random.Range(0, tetrominoes.Length);
+
+            if (BlockIndex >= BlockMaxIndex)
             {
                 ShuffleList(TetrominoShuffer);
                 BlockIndex = 0;
             }
-            TetrominoData data = tetrominoes[TetrominoShuffer[BlockIndex]];
+
+            var data = tetrominoes[TetrominoShuffer[BlockIndex]];
+
             BlockIndex++;
             tetrominoDatas.Add(data);
-            for(int i = 0; i < 3; i++)
-                HardClear(ExpectSpawnPos[i]);
-        }
-        //int random = Random.Range(0, tetrominoes.Length);
-        //TetrominoData data = tetrominoes[random];
-        this.activePiece.Initialize(this, this.spawnPosition, tetrominoDatas[0]);
 
-        stPiece.Initialize(this, this.ExpectSpawnPos[0], tetrominoDatas[1]);
-        stPiece1.Initialize(this, this.ExpectSpawnPos[1], tetrominoDatas[2]);
-        stPiece2.Initialize(this, this.ExpectSpawnPos[2], tetrominoDatas[3]);
+            for (var i = 0; i < 3; i++)
+            {
+                HardClear(ExpectSpawnPos[i]);
+            }
+        }
+
+        // int random = Random.Range(0, tetrominoes.Length);
+        // TetrominoData data = tetrominoes[random];
+
+        activePiece.Initialize(this, spawnPosition, tetrominoDatas[0]);
+
+        stPiece.Initialize(this, ExpectSpawnPos[0], tetrominoDatas[1]);
+        stPiece1.Initialize(this, ExpectSpawnPos[1], tetrominoDatas[2]);
+        stPiece2.Initialize(this, ExpectSpawnPos[2], tetrominoDatas[3]);
         tetrominoDatas.RemoveAt(0);
 
-
-        if (IsValidPosition(this.activePiece, this.spawnPosition))
+        if (IsValidPosition(activePiece, spawnPosition))
         {
-            Set(this.activePiece);
+            Set(activePiece);
         }
         else
         {
             GameOver();
         }
     }
+
     private void GameOver()
     {
-        this.tilemap.ClearAllTiles();
+        tilemap.ClearAllTiles();
         LogicValue.ScoreReset();
         SceneManager.LoadScene("GameOver");
     }
+
     public void Set(Piece piece)
     {
-        for (int i = 0; i < piece.cells.Length; i++)
+        foreach (var t in piece.cells)
         {
-            Vector3Int tilePosition = piece.cells[i] + piece.position;
-            this.tilemap.SetTile(tilePosition, piece.data.tile);
+            var tilePosition = t + piece.position;
+            tilemap.SetTile(tilePosition, piece.data.tile);
         }
     }
+
     public void StaticSet(StaticPiece piece)
     {
-        for (int i = 0; i < piece.cells.Length; i++)
+        foreach (var t in piece.cells)
         {
-            Vector3Int tilePosition = piece.cells[i] + piece.position;
-            this.tilemap.SetTile(tilePosition, piece.data.tile);
+            var tilePosition = t + piece.position;
+            tilemap.SetTile(tilePosition, piece.data.tile);
         }
     }
+
     public void StaticSet(StaticPiece1 piece)
     {
-        for (int i = 0; i < piece.cells.Length; i++)
+        foreach (var t in piece.cells)
         {
-            Vector3Int tilePosition = piece.cells[i] + piece.position;
-            this.tilemap.SetTile(tilePosition, piece.data.tile);
+            var tilePosition = t + piece.position;
+            tilemap.SetTile(tilePosition, piece.data.tile);
         }
     }
+
     public void StaticSet(StaticPiece2 piece)
     {
-        for (int i = 0; i < piece.cells.Length; i++)
+        foreach (var t in piece.cells)
         {
-            Vector3Int tilePosition = piece.cells[i] + piece.position;
-            this.tilemap.SetTile(tilePosition, piece.data.tile);
+            Vector3Int tilePosition = t + piece.position;
+            tilemap.SetTile(tilePosition, piece.data.tile);
         }
     }
+
     public void Clear(Piece piece)
     {
-        for (int i = 0; i < piece.cells.Length; i++)
+        foreach (var t in piece.cells)
         {
-            Vector3Int tilePosition = piece.cells[i] + piece.position;
-            this.tilemap.SetTile(tilePosition, null);
+            var tilePosition = t + piece.position;
+            tilemap.SetTile(tilePosition, null);
         }
     }
-    public void HardClear(Vector3Int Position)
-    {
-        Vector3Int tilePosition = Position + new Vector3Int(-1, 2, 0);
-        this.tilemap.SetTile(tilePosition, tileBase);
-        tilePosition = Position + new Vector3Int(-1, 1, 0);
-        this.tilemap.SetTile(tilePosition, tileBase);
-        tilePosition = Position + new Vector3Int(-1, 0, 0);
-        this.tilemap.SetTile(tilePosition, tileBase);
-        tilePosition = Position + new Vector3Int(-1, -1, 0);
-        this.tilemap.SetTile(tilePosition, tileBase);
-        tilePosition = Position + new Vector3Int(0, 2, 0);
-        this.tilemap.SetTile(tilePosition, tileBase);
-        tilePosition = Position + new Vector3Int(0, 1, 0);
-        this.tilemap.SetTile(tilePosition, tileBase);
-        tilePosition = Position + new Vector3Int(0, 0, 0);
-        this.tilemap.SetTile(tilePosition, tileBase);
-        tilePosition = Position + new Vector3Int(0, -1, 0);
-        this.tilemap.SetTile(tilePosition, tileBase);
-        tilePosition = Position + new Vector3Int(1, 2, 0);
-        this.tilemap.SetTile(tilePosition, tileBase);
-        tilePosition = Position + new Vector3Int(1, 1, 0);
-        this.tilemap.SetTile(tilePosition, tileBase);
-        tilePosition = Position + new Vector3Int(1, 0, 0);
-        this.tilemap.SetTile(tilePosition, tileBase);
-        tilePosition = Position + new Vector3Int(1, -1, 0);
-        this.tilemap.SetTile(tilePosition, tileBase); 
-        tilePosition = Position + new Vector3Int(2, 2, 0);
-        this.tilemap.SetTile(tilePosition, tileBase);
-        tilePosition = Position + new Vector3Int(2, 1, 0);
-        this.tilemap.SetTile(tilePosition, tileBase);
-        tilePosition = Position + new Vector3Int(2, 0, 0);
-        this.tilemap.SetTile(tilePosition, tileBase);
-        tilePosition = Position + new Vector3Int(2, -1, 0);
-        this.tilemap.SetTile(tilePosition, tileBase);
 
+    private void HardClear(Vector3Int position)
+    {
+        var tilePosition = position + new Vector3Int(-1, 2, 0);
+        tilemap.SetTile(tilePosition, tileBase);
+        
+        tilePosition = position + new Vector3Int(-1, 1, 0);
+        tilemap.SetTile(tilePosition, tileBase);
+        
+        tilePosition = position + new Vector3Int(-1, 0, 0);
+        tilemap.SetTile(tilePosition, tileBase);
+        
+        tilePosition = position + new Vector3Int(-1, -1, 0);
+        tilemap.SetTile(tilePosition, tileBase);
+        
+        tilePosition = position + new Vector3Int(0, 2, 0);
+        tilemap.SetTile(tilePosition, tileBase);
+        
+        tilePosition = position + new Vector3Int(0, 1, 0);
+        tilemap.SetTile(tilePosition, tileBase);
+        
+        tilePosition = position + new Vector3Int(0, 0, 0);
+        tilemap.SetTile(tilePosition, tileBase);
+        
+        tilePosition = position + new Vector3Int(0, -1, 0);
+        tilemap.SetTile(tilePosition, tileBase);
+        
+        tilePosition = position + new Vector3Int(1, 2, 0);
+        tilemap.SetTile(tilePosition, tileBase);
+        
+        tilePosition = position + new Vector3Int(1, 1, 0);
+        tilemap.SetTile(tilePosition, tileBase);
+        
+        tilePosition = position + new Vector3Int(1, 0, 0);
+        tilemap.SetTile(tilePosition, tileBase);
+        
+        tilePosition = position + new Vector3Int(1, -1, 0);
+        tilemap.SetTile(tilePosition, tileBase);
+        
+        tilePosition = position + new Vector3Int(2, 2, 0);
+        tilemap.SetTile(tilePosition, tileBase);
+        
+        tilePosition = position + new Vector3Int(2, 1, 0);
+        tilemap.SetTile(tilePosition, tileBase);
+        
+        tilePosition = position + new Vector3Int(2, 0, 0);
+        tilemap.SetTile(tilePosition, tileBase);
+        
+        tilePosition = position + new Vector3Int(2, -1, 0);
+        tilemap.SetTile(tilePosition, tileBase);
     }
+
     public bool IsValidPosition(Piece piece, Vector3Int position)
     {
-        RectInt bounds = this.Bounds;
+        var bounds = Bounds;
 
-        for (int i = 0; i < piece.cells.Length; i++)
+        foreach (var t in piece.cells)
         {
-            Vector3Int tilePosition = piece.cells[i] + position;
+            var tilePosition = t + position;
 
             if (!bounds.Contains((Vector2Int)tilePosition))
             {
@@ -238,13 +275,15 @@ public class Board : MonoBehaviour
                 return false;
             }
         }
+
         return true;
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     public void ClearLines()
     {
-        RectInt bounds = this.Bounds;
-        int row = bounds.yMin;
+        var bounds = Bounds;
+        var row = bounds.yMin;
 
         while (row < bounds.yMax)
         {
@@ -254,6 +293,7 @@ public class Board : MonoBehaviour
                 LogicValue.Score += LogicValue.GetScore;
                 Timer.TimeComsume(LogicValue.TimeConsume);
                 Debug.Log(LogicValue.BlockSpeed);
+
                 // Debug.Log(StageMgr.StageArr[0].SpeedUp);
             }
             else
@@ -262,49 +302,55 @@ public class Board : MonoBehaviour
             }
         }
     }
+
     private bool IsLineFull(int row)
     {
-        RectInt bounds = this.Bounds;
+        var bounds = Bounds;
 
-        for (int col = bounds.xMin; col < bounds.xMax; col++)
+        for (var col = bounds.xMin; col < bounds.xMax; col++)
         {
-            Vector3Int position = new Vector3Int(col, row, 0);
+            var position = new Vector3Int(col, row, 0);
 
-            if (!this.tilemap.HasTile(position))
+            if (!tilemap.HasTile(position))
             {
                 return false;
             }
         }
+
         return true;
     }
+
+    // ReSharper disable Unity.PerformanceAnalysis
     private void LineClear(int row)
     {
-        RectInt bounds = this.Bounds;
-        AudioManager.instance.PlaySfx(AudioManager.Sfx.BreakBlock);
-        for (int col = bounds.xMin; col < bounds.xMax; col++)
-        {
-            Vector3Int position = new Vector3Int(col, row, 0);
+        AudioManager.Instance.PlaySfx(AudioManager.Sfx.BreakBlock);
 
-            this.tilemap.SetTile(position, null);
+        var bounds = Bounds;
+
+        for (var col = bounds.xMin; col < bounds.xMax; col++)
+        {
+            var position = new Vector3Int(col, row, 0);
+
+            tilemap.SetTile(position, null);
         }
 
         while (row < bounds.yMax)
         {
-            for (int col = bounds.xMin; col < bounds.xMax; col++)
+            for (var col = bounds.xMin; col < bounds.xMax; col++)
             {
-                Vector3Int position = new Vector3Int(col, row + 1, 0);
-                TileBase above = this.tilemap.GetTile(position);
+                var position = new Vector3Int(col, row + 1, 0);
+                var above = tilemap.GetTile(position);
 
                 position = new Vector3Int(col, row, 0);
-                this.tilemap.SetTile(position, above);
+                tilemap.SetTile(position, above);
             }
+
             row++;
         }
-        LetterData SendData = new LetterData();
-        string json = JsonUtility.ToJson(SendData);
 
-        WebSocketDemo.Instance.SendGameLogic(json);
-        Debug.Log(json);
+        var json = JsonUtility.ToJson(new LetterData());
 
+        WebSocketManager.Instance.SendGameLogic(json);
+        // Debug.Log(json);
     }
 }

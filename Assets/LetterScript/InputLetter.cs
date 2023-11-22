@@ -1,156 +1,135 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Networking;
+using UnityEngine.Serialization;
 
-[Serializable]
-public class WordRequestData
+public class InputLetter : MonoBehaviour, IWebSocketReceiver
 {
-    public string word;
+    public static readonly string[] KOR_CHOSUNG_LIST =
+        { "ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ" };
 
-    public string SaveToString()
+    public static readonly string[] KOR_JUNGSUNG_LIST =
+        { "ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅘ", "ㅙ", "ㅚ", "ㅛ", "ㅜ", "ㅝ", "ㅞ", "ㅟ", "ㅠ", "ㅡ", "ㅢ", "ㅣ" };
+
+    private static readonly string[] KOR_JONGSUNG_LIST =
     {
-        return JsonUtility.ToJson(this);
-    }
-}
+        "", "ㄱ", "ㄲ", "ㄳ", "ㄴ", "ㄵ", "ㄶ", "ㄷ", "ㄹ", "ㄺ", "ㄻ", "ㄼ", "ㄽ", "ㄾ", "ㄿ", "ㅀ", "ㅁ", "ㅂ", "ㅄ", "ㅅ", "ㅆ", "ㅇ",
+        "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"
+    };
 
-[Serializable]
-public class WordResponseData
-{
-    public string description;
-    public bool isCorrect;
-}
+    public static readonly string[] KOR_All_LIST =
+        KOR_CHOSUNG_LIST.Concat(KOR_JUNGSUNG_LIST).Concat(KOR_JONGSUNG_LIST).ToArray();
 
-public class InputLetter : MonoBehaviour
-{
-    // private bool isFinished;
-    // private bool isCorrect;
+    [FormerlySerializedAs("WordInput")] public TMP_Text wordInput;
 
-    public static string[] KOR_CHOSUNG_LIST = new string[] { "ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ" };
+    private string _word;
+    private readonly Dictionary<string, int> _myWord = new();
 
-    public static string[] KOR_JUNGSUNG_LIST = new string[] { "ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅘ", "ㅙ", "ㅚ", "ㅛ", "ㅜ", "ㅝ", "ㅞ", "ㅟ", "ㅠ", "ㅡ", "ㅢ", "ㅣ" };
-
-    public static string[] KOR_JONGSUNG_LIST = new string[] { "", "ㄱ", "ㄲ", "ㄳ", "ㄴ", "ㄵ", "ㄶ", "ㄷ", "ㄹ", "ㄺ", "ㄻ", "ㄼ", "ㄽ", "ㄾ", "ㄿ", "ㅀ", "ㅁ", "ㅂ", "ㅄ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ" };
-
-
-    public TMP_Text WordInput;
-    private string Word = null;
-    Dictionary<string, int> MyWord = new Dictionary<string, int>();
     private void Awake()
     {
-        Word = WordInput.text;
-        string[] chosung = { "ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ" };
-        foreach (string ch in chosung)
+        WebSocketManager.Instance.Receivers.Add(this);
+
+        _word = wordInput.text;
+
+        // 한글 자음 추가
+        foreach (var ch in KOR_CHOSUNG_LIST)
         {
-            MyWord[ch] = 0;
+            _myWord[ch] = 0;
         }
 
         // 한글 모음 추가
-        string[] jungsung = { "ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅘ", "ㅙ", "ㅚ", "ㅛ", "ㅜ", "ㅝ", "ㅞ", "ㅟ", "ㅠ", "ㅡ", "ㅢ", "ㅣ" };
-        foreach (string jv in jungsung)
+        foreach (var jv in KOR_JUNGSUNG_LIST)
         {
-            MyWord[jv] = 0;
+            _myWord[jv] = 0;
         }
     }
 
     private void Update()
     {
-        //키보드
-        if (Word.Length > 0 && Input.GetKeyDown(KeyCode.Return))
+        // 키보드
+        if (_word.Length <= 0 || !Input.GetKeyDown(KeyCode.Return))
         {
-            InputName();
-            Verifier();
-            WordInput.ClearMesh();
+            return;
         }
+
+        InputName();
+        Verifier();
+        wordInput.ClearMesh();
     }
 
-    //마우스
-    public void InputName()
+    // 마우스
+    private void InputName()
     {
-        Word = WordInput.text;
-       // Debug.Log(KOR_CHOSUNG_LIST[KoreanCharacterUtils.GetChosung(Word[0])]);
+        _word = wordInput.text;
     }
-    
-    private bool Verifier()
-    {
-        // isFinished = false;
-        // isCorrect = false;
-        
-        string[] All = { "ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ", "ㅏ", "ㅐ", "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅘ", "ㅙ", "ㅚ", "ㅛ", "ㅜ", "ㅝ", "ㅞ", "ㅟ", "ㅠ", "ㅡ", "ㅢ", "ㅣ" };
 
-        for (int i=0;i<Word.Length-1;i++)
+    // ReSharper disable Unity.PerformanceAnalysis
+    private void Verifier()
+    {
+        for (var i = 0; i < _word.Length - 1; i++)
         {
-            //Debug.Log(Word[i]);
-            //Debug.Log(KOR_CHOSUNG_LIST[KoreanCharacterUtils.GetChosung(Word[i])]);
-            //Debug.Log(KOR_JUNGSUNG_LIST[KoreanCharacterUtils.GetJungsung(Word[i])]);
-            //Debug.Log(KOR_JONGSUNG_LIST[KoreanCharacterUtils.GetJongsung(Word[i])]);
-            MyWord[KOR_CHOSUNG_LIST[KoreanCharacterUtils.GetChosung(Word[i])]]++;
-            MyWord[KOR_JUNGSUNG_LIST[KoreanCharacterUtils.GetJungsung(Word[i])]]++;
-            if(KOR_JONGSUNG_LIST[KoreanCharacterUtils.GetJongsung(Word[i])] != "")
-                MyWord[KOR_JONGSUNG_LIST[KoreanCharacterUtils.GetJongsung(Word[i])]]++;
-        }
-        //for(int i=0;i<All.Length;i++)
-        //{
-        //    Debug.Log(All.Length);
-        //    Debug.Log(LetterLogic.koreanDictionary[All[i]]);
-        //}
-        for (int i = 0; i < All.Length; i++)
-        {
-            if (LetterLogic.koreanDictionary[All[i]] - MyWord[All[i]] < 0)
+            // Debug.Log(_word[i]);
+            // Debug.Log(KOR_CHOSUNG_LIST[KoreanCharacterUtils.GetChosung(_word[i])]);
+            // Debug.Log(KOR_JUNGSUNG_LIST[KoreanCharacterUtils.GetJungsung(_word[i])]);
+            // Debug.Log(KOR_JONGSUNG_LIST[KoreanCharacterUtils.GetJongsung(_word[i])]);
+            _myWord[KOR_CHOSUNG_LIST[KoreanCharacterUtils.GetChosung(_word[i])]]++;
+            _myWord[KOR_JUNGSUNG_LIST[KoreanCharacterUtils.GetJungsung(_word[i])]]++;
+
+            if (KOR_JONGSUNG_LIST[KoreanCharacterUtils.GetJongsung(_word[i])] != "")
             {
-                NoLetter();
-                return false;
+                _myWord[KOR_JONGSUNG_LIST[KoreanCharacterUtils.GetJongsung(_word[i])]]++;
             }
         }
-        
+
+        // foreach (var t in KOR_All_LIST)
+        // {
+        //     Debug.Log(KOR_All_LIST.Length);
+        //     Debug.Log(LetterLogic.koreanDictionary[t]);
+        // }
+
+        if (KOR_All_LIST.Any(t => LetterLogic.koreanDictionary[t] < _myWord[t]))
+        {
+            NoLetter();
+            return;
+        }
+
         // 검증 로직
-        // StartCoroutine(SendPost("http://13.209.164.126:8000/api/game/verify", JsonUtility.ToJson(new WordRequestData())));
+        WebSocketManager.Instance.SendGameLogic(new RequestVerifyData(_word).ObjectToJson());
+    }
 
-        // StartCoroutine(SleepTime());
-
-        // if (isCorrect == false)
-        //     return false;
-        
-        // 형태소 분석
-        for (int i = 0; i < All.Length; i++)
+    public void OnReceivePacket(WebSocketBaseData socketBaseData)
+    {
+        if (socketBaseData is not ResponseVerifyData data || socketBaseData.type != "verify")
         {
-            LetterLogic.koreanDictionary[All[i]] = LetterLogic.koreanDictionary[All[i]] - MyWord[All[i]];
-            LetterLogic.count = LetterLogic.count - MyWord[All[i]];
-            MyWord[All[i]] = 0;
+            return;
         }
 
-        LetterLogic.score += 100;
-        return true;
-    }
-    
-    private IEnumerator SendPost(string url, string json)
-    {
-        var request = UnityWebRequest.PostWwwForm(url, json);
-
-        yield return request.SendWebRequest();
-        
-        // 에러 발생 시
-        if (request.result is UnityWebRequest.Result.ConnectionError or UnityWebRequest.Result.ProtocolError)
+        if (data is { isCorrect: true })
         {
-            Debug.Log(request.error);
-            yield break;
+            AudioManager.Instance.PlaySfx(AudioManager.Sfx.Word_Correct);
+
+            // 형태소 분석
+            foreach (var t in KOR_All_LIST)
+            {
+                LetterLogic.koreanDictionary[t] -= _myWord[t];
+                LetterLogic.count -= _myWord[t];
+                _myWord[t] = 0;
+            }
+
+            LetterLogic.score += 100;
+
+            Debug.Log(data.description);
         }
-        
-        var data = JsonUtility.FromJson<WordResponseData>(request.downloadHandler.text);
-
-        // isCorrect = data.isCorrect;
-        // isFinished = true;
+        else
+        {
+            AudioManager.Instance.PlaySfx(AudioManager.Sfx.word_wrong);
+        }
     }
 
-    private IEnumerator SleepTime()
+    private void NoLetter()
     {
-        yield return new WaitForSeconds(1000);
-    }
-
-    void NoLetter()
-    {
-        Debug.Log("No Letter");
+        // Debug.Log("No Letter");
+        AudioManager.Instance.PlaySfx(AudioManager.Sfx.Word_No_element);
     }
 }

@@ -8,16 +8,13 @@ using Unity.VisualScripting;
 
 public class KoreanCharacterUtils
 {
-
-
     private const int BASE_CODE = 44032;
     private const int CHOSUNG = 588;
     private const int JUNGSUNG = 28;
 
     public static int GetCharCode(char word)
     {
-        
-        return (int)word - BASE_CODE;
+        return word - BASE_CODE;
     }
 
     public static int GetChosung(char word)
@@ -47,11 +44,11 @@ public class KoreanCharacterUtils
 
     public static bool IsKorean(string word)
     {
-        return Regex.IsMatch(word, @".*[∞°-∆R]+.*");
+        return Regex.IsMatch(word, @".*[Í∞Ä-Ìû£]+.*");
     }
 
     public static bool IsKor(string word)
     {
-        return Regex.IsMatch(word, @".*[§°-§æ§ø-§”∞°-∆R]+.*");
+        return Regex.IsMatch(word, @".*[„Ñ±-„Öé„Öè-„Ö£Í∞Ä-Ìû£]+.*");
     }
 }
