@@ -46,7 +46,7 @@ public class WebSocketManager : MonoBehaviour
             Debug.Log($"WS state: {ws.GetState()}");
 
             // ws.Send(Encoding.UTF8.GetBytes("Hello from Unity 3D!"));
-            SendGameLogic(new RequestJoinData("wordguess").ObjectToJson());
+            SendGameLogic(new RequestJoinData().ObjectToJson());
         };
 
         // Add OnMessage event listener
