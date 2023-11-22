@@ -67,64 +67,147 @@ public class InputLetter : MonoBehaviour, IWebSocketReceiver
     // ReSharper disable Unity.PerformanceAnalysis
     private void Verifier()
     {
-        for (var i = 0; i < _word.Length - 1; i++)
+        //   for (var i = 0; i < _word.Length - 1; i++)
+        //   {
+        //       // Debug.Log(_word[i]);
+        //       // Debug.Log(KOR_CHOSUNG_LIST[KoreanCharacterUtils.GetChosung(_word[i])]);
+        //       // Debug.Log(KOR_JUNGSUNG_LIST[KoreanCharacterUtils.GetJungsung(_word[i])]);
+        //       // Debug.Log(KOR_JONGSUNG_LIST[KoreanCharacterUtils.GetJongsung(_word[i])]);
+        //       _myWord[KOR_CHOSUNG_LIST[KoreanCharacterUtils.GetChosung(_word[i])]]++;
+        //       _myWord[KOR_JUNGSUNG_LIST[KoreanCharacterUtils.GetJungsung(_word[i])]]++;
+        //
+        //       if (KOR_JONGSUNG_LIST[KoreanCharacterUtils.GetJongsung(_word[i])] != "")
+        //       {
+        //           _myWord[KOR_JONGSUNG_LIST[KoreanCharacterUtils.GetJongsung(_word[i])]]++;
+        //       }
+        //   }
+        //
+        //   // foreach (var t in KOR_All_LIST)
+        //   // {
+        //   //     Debug.Log(KOR_All_LIST.Length);
+        //   //     Debug.Log(LetterLogic.koreanDictionary[t]);
+        //   // }
+        //
+        //   // if (KOR_All_LIST.Any(t => LetterLogic.koreanDictionary[t] < _myWord[t]))
+        //   // {
+        //   //     NoLetter();
+        //   //     return;
+        //   // }
+        //
+        //   // 검증 로직
+        //   // WebSocketManager.Instance.SendGameLogic(new RequestVerifyData(_word).ObjectToJson());
+        //   
+        //   AudioManager.Instance.PlaySfx(AudioManager.Sfx.Word_Correct);
+        //
+        //   // 형태소 분석
+        // ;
+        //   foreach (var t in KOR_All_LIST)
+        //   {
+        //       if (KOR_CHOSUNG_LIST.Contains(t) && KOR_JONGSUNG_LIST.Contains(t))
+        //       {
+        //           LetterLogic.koreanDictionary[t] -= _myWord[t];
+        //           LetterLogic.count -= _myWord[t];
+        //           _myWord[t] = 0;
+        //       }
+        //   }
+        //
+        //   LetterLogic.score += 100;
+
+        // isFinished = false;
+        // isCorrect = false;
+
+        string[] All =
         {
-            // Debug.Log(_word[i]);
-            // Debug.Log(KOR_CHOSUNG_LIST[KoreanCharacterUtils.GetChosung(_word[i])]);
-            // Debug.Log(KOR_JUNGSUNG_LIST[KoreanCharacterUtils.GetJungsung(_word[i])]);
-            // Debug.Log(KOR_JONGSUNG_LIST[KoreanCharacterUtils.GetJongsung(_word[i])]);
+            "ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ", "ㅏ", "ㅐ",
+            "ㅑ", "ㅒ", "ㅓ", "ㅔ", "ㅕ", "ㅖ", "ㅗ", "ㅘ", "ㅙ", "ㅚ", "ㅛ", "ㅜ", "ㅝ", "ㅞ", "ㅟ", "ㅠ", "ㅡ", "ㅢ", "ㅣ"
+        };
+
+        for (int i = 0; i < _word.Length - 1; i++)
+        {
+            //Debug.Log(Word[i]);
+            //Debug.Log(KOR_CHOSUNG_LIST[KoreanCharacterUtils.GetChosung(Word[i])]);
+            //Debug.Log(KOR_JUNGSUNG_LIST[KoreanCharacterUtils.GetJungsung(Word[i])]);
+            //Debug.Log(KOR_JONGSUNG_LIST[KoreanCharacterUtils.GetJongsung(Word[i])]);
             _myWord[KOR_CHOSUNG_LIST[KoreanCharacterUtils.GetChosung(_word[i])]]++;
             _myWord[KOR_JUNGSUNG_LIST[KoreanCharacterUtils.GetJungsung(_word[i])]]++;
-
             if (KOR_JONGSUNG_LIST[KoreanCharacterUtils.GetJongsung(_word[i])] != "")
-            {
                 _myWord[KOR_JONGSUNG_LIST[KoreanCharacterUtils.GetJongsung(_word[i])]]++;
+        }
+
+        //for(int i=0;i<All.Length;i++)
+        //{
+        //    Debug.Log(All.Length);
+        //    Debug.Log(LetterLogic.koreanDictionary[All[i]]);
+        //}
+        for (int i = 0; i < All.Length; i++)
+        {
+            if (LetterLogic.koreanDictionary[All[i]] - _myWord[All[i]] < 0)
+            {
+                NoLetter();
+                return;
             }
         }
 
-        // foreach (var t in KOR_All_LIST)
-        // {
-        //     Debug.Log(KOR_All_LIST.Length);
-        //     Debug.Log(LetterLogic.koreanDictionary[t]);
-        // }
+        // 검증 로직
+        // StartCoroutine(SendPost("http://13.209.164.126:8000/api/game/verify", JsonUtility.ToJson(new WordRequestData())));
 
-        if (KOR_All_LIST.Any(t => LetterLogic.koreanDictionary[t] < _myWord[t]))
+        // StartCoroutine(SleepTime());
+
+        // if (isCorrect == false)
+        //     return false;
+
+        // 형태소 분석
+        for (int i = 0; i < All.Length; i++)
         {
-            NoLetter();
-            return;
+            LetterLogic.koreanDictionary[All[i]] = LetterLogic.koreanDictionary[All[i]] - _myWord[All[i]];
+            LetterLogic.count = LetterLogic.count - _myWord[All[i]];
+            _myWord[All[i]] = 0;
         }
 
-        // 검증 로직
-        WebSocketManager.Instance.SendGameLogic(new RequestVerifyData(_word).ObjectToJson());
+        LetterLogic.score += 100;
     }
 
     public void OnReceivePacket(WebSocketBaseData socketBaseData)
     {
-        if (socketBaseData is not ResponseVerifyData data || socketBaseData.type != "verify")
-        {
-            return;
-        }
+        // if (socketBaseData is not ResponseVerifyData data || socketBaseData.type != "verify")
+        // {
+        //     return;
+        // }
 
-        if (data is { isCorrect: true })
-        {
-            AudioManager.Instance.PlaySfx(AudioManager.Sfx.Word_Correct);
+        // if (data is { isCorrect: true })
+        // {
+        //     AudioManager.Instance.PlaySfx(AudioManager.Sfx.Word_Correct);
+        //
+        //     // 형태소 분석
+        //     foreach (var t in KOR_All_LIST)
+        //     {
+        //         LetterLogic.koreanDictionary[t] -= _myWord[t];
+        //         LetterLogic.count -= _myWord[t];
+        //         _myWord[t] = 0;
+        //     }
+        //
+        //     LetterLogic.score += 100;
+        //
+        //     Debug.Log(data.description);
+        // }
+        // else
+        // {
+        //     AudioManager.Instance.PlaySfx(AudioManager.Sfx.word_wrong);
+        // }
 
-            // 형태소 분석
-            foreach (var t in KOR_All_LIST)
-            {
-                LetterLogic.koreanDictionary[t] -= _myWord[t];
-                LetterLogic.count -= _myWord[t];
-                _myWord[t] = 0;
-            }
+        // AudioManager.Instance.PlaySfx(AudioManager.Sfx.Word_Correct);
+        //
+        // // 형태소 분석
+        // foreach (var t in KOR_All_LIST)
+        // {
+        //     LetterLogic.koreanDictionary[t] -= _myWord[t];
+        //     LetterLogic.count -= _myWord[t];
+        //     _myWord[t] = 0;
+        // }
+        //
+        // LetterLogic.score += 100;
 
-            LetterLogic.score += 100;
-
-            Debug.Log(data.description);
-        }
-        else
-        {
-            AudioManager.Instance.PlaySfx(AudioManager.Sfx.word_wrong);
-        }
+        // Debug.Log(data.description);
     }
 
     private void NoLetter()

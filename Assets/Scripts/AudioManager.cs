@@ -83,6 +83,8 @@ public class AudioManager : MonoBehaviour
             Debug.Log($"index: {index}");
 
             var loopIndex = (index + _channelIndex) % _sfxPlayers.Length;
+            
+            Debug.Log($"loopIndex: {loopIndex}");
 
             if (_sfxPlayers[loopIndex].isPlaying)
             {

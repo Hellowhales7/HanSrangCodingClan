@@ -76,6 +76,7 @@ public class RequestEndData : WebSocketBaseData
     }
 }
 
+[Serializable]
 public class LetterData : WebSocketBaseData
 {
     public string[] Data = new string[10];
@@ -83,6 +84,7 @@ public class LetterData : WebSocketBaseData
     public LetterData()
     {
         type = "letter";
+        jsonClass = this;
 
         for (var i = 0; i < 7; i++)
         {
