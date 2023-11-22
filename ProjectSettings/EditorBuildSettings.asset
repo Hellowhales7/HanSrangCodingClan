@@ -8,13 +8,13 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/StartScene.unity
     guid: 4eb000714d67c17418b425c0268b581b
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Tetris.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 0
     path: Assets/Scenes/Tetris_NoServer.unity
     guid: 5f7058bd89a15bf4e85693bfcbb675db
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/wordguess.unity
     guid: 2fed45d2c6318e24abc7a67b663cdb3b
   - enabled: 0
